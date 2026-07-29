@@ -1,125 +1,194 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Step Drum Machine — LVL LTD</title>
-<meta name="description" content="16-step drum sequencer with AI patterns for LVL LTD"/>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>LVL LTD Studio — Modular Synth & Drums</title>
+<meta name="description" content="AS3340-class modular voice with Eurorack 1V/oct, expo calibration, VCF/VCA, FX — plus 16-step drum sequencer. Free tools on lvlltd.com."/>
 <meta name="theme-color" content="#08090c"/>
+<meta property="og:title" content="LVL LTD Studio — Modular Synth & Drums"/>
+<meta property="og:description" content="Modular synthesizer lab and step drum machine for LVL LTD."/>
+<meta property="og:type" content="website"/>
+<link rel="canonical" href="https://lvlltd.com/tools/music-lab/"/>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
-<style>
-:root{--bg:#08090c;--elev:#101218;--s:#151820;--s2:#1b1f2a;--fg:#eef0f4;--m:#8b92a3;--f:#5c6475;--b:#2a3040;--bs:#3a4256;--a:#5eead4;--ad:#2dd4bf;--af:#041412;--k:#5eead4;--sn:#7dd3fc;--h:#a5b4fc;--p:#fcd34d;--play:#34d399;--beat:#232836}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--fg);font-family:system-ui,sans-serif}
-button{font:inherit;cursor:pointer;border:none;background:0;color:inherit}
-.app{max-width:64rem;margin:0 auto;padding:1.25rem .75rem 2rem}
-.glow{position:fixed;inset:0;z-index:-1;background:radial-gradient(900px 420px at 12% -8%,rgba(94,234,212,.08),transparent 55%),linear-gradient(180deg,#0a0c10,var(--bg) 40%)}
-.eyebrow{font-size:.75rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--m);margin:0 0 .25rem}
-h1{margin:0;font-size:clamp(1.5rem,4vw,1.875rem);font-weight:600;letter-spacing:-.02em}
-.sub{margin:.35rem 0 0;color:var(--m);font-size:.875rem}
-.header{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:space-between;align-items:flex-end;margin-bottom:1.25rem}
-.chip{border:1px solid var(--b);background:var(--s);border-radius:999px;padding:.25rem .65rem;font-size:.75rem;color:var(--f);font-variant-numeric:tabular-nums}
-.panel{border:1px solid var(--b);background:var(--elev);border-radius:20px;padding:.75rem;box-shadow:0 20px 50px #0007;margin-bottom:1.25rem}
-@media(min-width:640px){.panel{padding:1.25rem}}
-.transport{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;justify-content:space-between}
-.btn-row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;height:2.5rem;padding:0 .9rem;border-radius:12px;font-size:.875rem;font-weight:500;border:1px solid transparent}
-.btn:active{transform:scale(.98)}
-.play{background:var(--play);color:var(--af);width:3rem;height:3rem;padding:0;border-radius:16px;font-size:1.1rem}
-.stop{background:var(--s2);border-color:var(--b);width:3rem;height:3rem;padding:0;border-radius:16px}
-.sec{background:var(--s2);border-color:var(--b);color:var(--fg)}
-.ai{background:var(--a);color:var(--af)}
-.sel{height:2.5rem;padding:0 .75rem;border-radius:12px;border:1px solid var(--b);background:var(--s2);position:relative}
-.menu{position:absolute;left:0;top:calc(100% + 4px);z-index:50;min-width:11rem;background:var(--s);border:1px solid var(--b);border-radius:12px;padding:.25rem 0;box-shadow:0 12px 32px #0006}
-.menu button{display:block;width:100%;text-align:left;padding:.5rem .75rem;font-size:.875rem}
-.menu button:hover{background:var(--s2)}
-.sliders{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;flex:1;max-width:36rem}
-.ctrl label{display:flex;justify-content:space-between;font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--m);margin-bottom:.35rem}
-.ctrl .v{color:var(--fg);font-variant-numeric:tabular-nums;text-transform:none}
-input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:999px;background:var(--s2);border:1px solid var(--b)}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--fg);border:1px solid var(--bs)}
-.row{display:grid;grid-template-columns:3.5rem 1fr;gap:.5rem;align-items:center;margin-bottom:.4rem}
-@media(min-width:640px){.row{grid-template-columns:4.5rem 1fr;gap:.75rem}}
-.steps{display:grid;grid-template-columns:repeat(16,minmax(0,1fr));gap:4px}
-@media(min-width:640px){.steps{gap:6px}}
-.tl{height:2.5rem;border:1px solid var(--b);background:var(--s);border-radius:8px;padding:.35rem .5rem;text-align:left;display:flex;flex-direction:column;justify-content:center}
-.tl strong{font-size:.8rem;line-height:1}.tl span{font-size:.6rem;color:var(--f);margin-top:2px}
-.tl.mu{opacity:.4}
-.pad{aspect-ratio:1;min-height:2.25rem;border-radius:6px;border:1px solid var(--b);background:var(--s)}
-.pad:active{transform:scale(.94)}.pad.be{background:var(--beat)}
-.pad.ok{box-shadow:0 0 14px #5eead455}.pad.ok.k{background:#5eead4e6;border-color:var(--k)}
-.pad.ok.sn{background:#7dd3fce6;border-color:var(--sn)}.pad.ok.hh{background:#a5b4fce6;border-color:var(--h)}
-.pad.ok.pc{background:#fcd34de6;border-color:var(--p)}.pad.ph{outline:2px solid var(--a);outline-offset:1px}
-.sn{font-size:10px;text-align:center;color:var(--f);height:1.2rem;display:flex;align-items:flex-end;justify-content:center;font-variant-numeric:tabular-nums}
-.sn.b{color:var(--m)}.sn.n{color:var(--a)}
-.pb{height:4px;border-radius:999px;background:var(--b)}.pb.on{background:var(--a)}.pb.b{background:var(--bs)}
-.foot{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:space-between;border-top:1px solid var(--b);padding-top:1rem;font-size:.75rem;color:var(--f)}
-.foot a{color:var(--a)}.ck{color:var(--k)}.csn{color:var(--sn)}.ch{color:var(--h)}.cp{color:var(--p)}
-@media(max-width:639px){.sliders{grid-template-columns:1fr;width:100%}.tl span{display:none}}
-</style></head><body>
+<link rel="stylesheet" href="/app.css"/>
+</head>
+<body>
 <div class="glow"></div>
+<nav class="topnav"><div class="topnav-in">
+  <p class="brand">LVL LTD Studio</p>
+  <div class="tabs" role="tablist">
+    <button type="button" class="tab on" data-mode="modular" role="tab">Modular</button>
+    <button type="button" class="tab" data-mode="drums" role="tab">Drums</button>
+  </div>
+</div></nav>
+
 <div class="app">
-<header class="header"><div><p class="eyebrow">LVL LTD · Sequencer</p><h1>Step Drum Machine</h1><p class="sub">16-step grid · kick, snare, hats, perc · AI genre patterns</p></div>
-<span class="chip" id="st">House starter loaded</span></header>
-<section class="panel"><div class="transport">
-<div class="btn-row">
-<button class="btn play" id="play" aria-label="Play">▶</button>
-<button class="btn sec" id="clr">Clear</button>
-<button class="btn sec" id="rnd">Random</button>
-<button class="btn ai" id="ai">✦ AI Pattern</button>
-<div style="position:relative"><button class="sel" id="gb">House ▾</button><div class="menu" id="gm" hidden></div></div>
+<!-- MODULAR -->
+<div id="view-mod">
+  <header class="header">
+    <div>
+      <p class="eyebrow">LVL LTD · Modular</p>
+      <h1>AS3340 Voice Lab</h1>
+      <p class="sub">Triangle-core VCO · expo converter · Eurorack 1V/oct · VCF · VCA · drive · chorus · delay</p>
+    </div>
+    <div class="btn-row">
+      <button class="btn play" id="pwr">Power On</button>
+      <span class="chip" id="m-status">Power on to engage AS3340-class voice</span>
+    </div>
+  </header>
+
+  <div class="cards">
+    <div class="card"><b>AS3340 VCO</b><span>tri · saw · PWM</span></div>
+    <div class="card"><b>Expo CV</b><span>1V/oct · scale</span></div>
+    <div class="card"><b>VCF</b><span>LP / HP / BP</span></div>
+    <div class="card"><b>VCA + ADSR</b><span>amp · filter env</span></div>
+    <div class="card"><b>LFO</b><span>pitch · cut · PWM</span></div>
+    <div class="card"><b>FX</b><span>drive · chorus · delay</span></div>
+  </div>
+
+  <div class="pills" style="margin-bottom:1rem">
+    <span class="chip" style="border:0;background:transparent;padding-left:0">Patches</span>
+    <button type="button" class="pill" data-preset="bass">Moogish Bass</button>
+    <button type="button" class="pill" data-preset="pad">Soft Pad</button>
+    <button type="button" class="pill" data-preset="lead">PWM Lead</button>
+    <button type="button" class="pill" data-preset="pluck">Pluck</button>
+    <button type="button" class="pill" data-preset="west">West Coast</button>
+  </div>
+
+  <div class="grid2">
+    <section class="panel">
+      <div class="ptitle"><h2>AS3340-class VCO</h2><span>expo · waves · sync</span></div>
+      <div class="knobs">
+        <div class="ctrl"><label>Scale (1V/oct) <span class="v" id="scale-v">1.000</span></label><input type="range" id="scale" min="0.9" max="1.1" step="0.001" value="1"></div>
+        <div class="ctrl"><label>Offset <span class="v" id="offset-v">0.000 V</span></label><input type="range" id="offset" min="-1" max="1" step="0.001" value="0"></div>
+        <div class="ctrl"><label>HF Track <span class="v" id="hf-v">15%</span></label><input type="range" id="hf" min="0" max="1" step="0.01" value="0.15"></div>
+        <div class="ctrl"><label>PWM <span class="v" id="pwm-v">35%</span></label><input type="range" id="pwm" min="0.05" max="0.95" step="0.01" value="0.35"></div>
+        <div class="ctrl"><label>Saw <span class="v" id="saw-v">70%</span></label><input type="range" id="saw" min="0" max="1" step="0.01" value="0.7"></div>
+        <div class="ctrl"><label>Triangle <span class="v" id="tri-v">25%</span></label><input type="range" id="tri" min="0" max="1" step="0.01" value="0.25"></div>
+        <div class="ctrl"><label>Pulse <span class="v" id="pulse-v">45%</span></label><input type="range" id="pulse" min="0" max="1" step="0.01" value="0.45"></div>
+        <div class="ctrl"><label>Detune ¢ <span class="v" id="detune-v">7.0 ¢</span></label><input type="range" id="detune" min="0" max="30" step="0.5" value="7"></div>
+        <div class="ctrl"><label>Sync ratio <span class="v" id="sync-v">1.00</span></label><input type="range" id="sync" min="1" max="4" step="0.01" value="1"></div>
+        <div class="ctrl"><label>Glide <span class="v" id="glide-v">20 ms</span></label><input type="range" id="glide" min="0.001" max="0.4" step="0.001" value="0.02"></div>
+      </div>
+      <div class="cal" id="cal"></div>
+    </section>
+
+    <section class="panel">
+      <div class="ptitle"><h2>VCF · Envelopes · LFO</h2><span>East Coast path</span></div>
+      <div class="pills">
+        <button type="button" class="pill on" data-ftype="lowpass">lowpass</button>
+        <button type="button" class="pill" data-ftype="highpass">highpass</button>
+        <button type="button" class="pill" data-ftype="bandpass">bandpass</button>
+      </div>
+      <div class="knobs">
+        <div class="ctrl"><label>Cutoff <span class="v" id="cutoff-v">1800 Hz</span></label><input type="range" id="cutoff" min="80" max="12000" step="10" value="1800"></div>
+        <div class="ctrl"><label>Resonance <span class="v" id="q-v">4.5</span></label><input type="range" id="q" min="0.3" max="18" step="0.1" value="4.5"></div>
+        <div class="ctrl"><label>Filter env <span class="v" id="fenv-v">55%</span></label><input type="range" id="fenv" min="0" max="1" step="0.01" value="0.55"></div>
+        <div class="ctrl"><label>LFO → filter <span class="v" id="flfo-v">20%</span></label><input type="range" id="flfo" min="0" max="1" step="0.01" value="0.2"></div>
+        <div class="ctrl"><label>Amp A <span class="v" id="a-v">10 ms</span></label><input type="range" id="a" min="0.001" max="1.5" step="0.001" value="0.01"></div>
+        <div class="ctrl"><label>Amp D <span class="v" id="d-v">180 ms</span></label><input type="range" id="d" min="0.01" max="1.5" step="0.01" value="0.18"></div>
+        <div class="ctrl"><label>Amp S <span class="v" id="s-v">65%</span></label><input type="range" id="s" min="0" max="1" step="0.01" value="0.65"></div>
+        <div class="ctrl"><label>Amp R <span class="v" id="r-v">280 ms</span></label><input type="range" id="r" min="0.01" max="2" step="0.01" value="0.28"></div>
+        <div class="ctrl"><label>LFO rate <span class="v" id="lfoRate-v">4.20 Hz</span></label><input type="range" id="lfoRate" min="0.05" max="20" step="0.05" value="4.2"></div>
+        <div class="ctrl"><label>LFO depth <span class="v" id="lfoDepth-v">35%</span></label><input type="range" id="lfoDepth" min="0" max="1" step="0.01" value="0.35"></div>
+      </div>
+      <div class="pills" style="margin-top:.75rem">
+        <span class="chip" style="border:0;background:transparent;padding-left:0">LFO dest</span>
+        <button type="button" class="pill on" data-lfo="filter">filter</button>
+        <button type="button" class="pill" data-lfo="pitch">pitch</button>
+        <button type="button" class="pill" data-lfo="pwm">pwm</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="ptitle"><h2>Effects rack</h2><span>drive · chorus · delay</span></div>
+      <div class="knobs">
+        <div class="ctrl"><label>Drive <span class="v" id="drive-v">25%</span></label><input type="range" id="drive" min="0" max="1" step="0.01" value="0.25"></div>
+        <div class="ctrl"><label>Master <span class="v" id="master-v">72%</span></label><input type="range" id="master" min="0" max="1" step="0.01" value="0.72"></div>
+        <div class="ctrl"><label>Chorus rate <span class="v" id="chorusR-v">0.35 Hz</span></label><input type="range" id="chorusR" min="0.05" max="2" step="0.01" value="0.35"></div>
+        <div class="ctrl"><label>Chorus depth <span class="v" id="chorusD-v">3.0 ms</span></label><input type="range" id="chorusD" min="0" max="0.008" step="0.0001" value="0.003"></div>
+        <div class="ctrl"><label>Chorus mix <span class="v" id="chorusMix-v">20%</span></label><input type="range" id="chorusMix" min="0" max="1" step="0.01" value="0.2"></div>
+        <div class="ctrl"><label>Delay time <span class="v" id="delayT-v">280 ms</span></label><input type="range" id="delayT" min="0.05" max="1" step="0.01" value="0.28"></div>
+        <div class="ctrl"><label>Delay feedback <span class="v" id="delayFb-v">35%</span></label><input type="range" id="delayFb" min="0" max="0.9" step="0.01" value="0.35"></div>
+        <div class="ctrl"><label>Delay mix <span class="v" id="delayMix-v">22%</span></label><input type="range" id="delayMix" min="0" max="1" step="0.01" value="0.22"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="ptitle"><h2>Eurorack standards</h2><span>Doepfer A-100</span></div>
+      <dl class="ref">
+        <div><dt>Pitch</dt><dd>1 V/octave</dd></div>
+        <div><dt>Gate</dt><dd>≳ +3 V (often 0/+5 V)</dd></div>
+        <div><dt>Audio</dt><dd>~10 Vpp (±5 V)</dd></div>
+        <div><dt>LFO</dt><dd>±2.5 V or ±5 V bipolar</dd></div>
+        <div><dt>Envelope</dt><dd>0…+8 V unipolar</dd></div>
+        <div><dt>Chip model</dt><dd>AS3340 / CEM3340 family</dd></div>
+      </dl>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="header" style="margin-bottom:.75rem">
+      <div>
+        <h2 style="font-size:.95rem;margin:0">Keyboard / Gate</h2>
+        <p class="sub" style="margin:0">Tap or hold · computer keys A–K</p>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn sec" id="oct-">Oct −</button>
+        <span class="chip" id="octv">Oct +0</span>
+        <button type="button" class="btn sec" id="oct+">Oct +</button>
+      </div>
+    </div>
+    <div class="kb-wrap">
+      <div class="whites" id="whites"></div>
+      <div class="blacks" id="blacks"></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <p>CEM3340 / AS3340 concepts · expo 1V/oct · multi-wave · VCF→VCA · FX</p>
+    <p><a href="https://lvlltd.com">lvlltd.com</a> · <a href="https://lvlltd.com/tools/music-lab/">/tools/music-lab/</a> · <a href="https://music.lvlltd.com">music</a></p>
+  </footer>
 </div>
-<div class="sliders">
-<div class="ctrl"><label>Tempo <span class="v" id="bv">124 BPM</span></label><input type="range" id="bpm" min="60" max="180" value="124"></div>
-<div class="ctrl"><label>Swing <span class="v" id="sv">12%</span></label><input type="range" id="sw" min="0" max="65" value="12"></div>
-<div class="ctrl"><label>Volume <span class="v" id="vv">88%</span></label><input type="range" id="vl" min="0" max="100" value="88"></div>
-</div></div></section>
-<section class="panel"><div class="row"><div></div><div class="steps" id="nums"></div></div><div id="tracks"></div><div class="row"><div></div><div class="steps" id="bars"></div></div></section>
-<footer class="foot"><p>Tap pads · track label = audition · right-click mute · Space = play</p>
-<p><a href="https://lvlltd.com" target="_blank" rel="noreferrer">lvlltd.com</a> · AI agent skill marketplace</p></footer>
+
+<!-- DRUMS -->
+<div id="view-drums" class="hidden">
+  <header class="header">
+    <div>
+      <p class="eyebrow">LVL LTD · Sequencer</p>
+      <h1>Step Drum Machine</h1>
+      <p class="sub">16-step grid · kick, snare, hats, perc · AI genre patterns</p>
+    </div>
+    <span class="chip" id="st">House starter loaded</span>
+  </header>
+  <section class="panel">
+    <div class="transport">
+      <div class="btn-row">
+        <button class="btn play" id="play" aria-label="Play">▶</button>
+        <button class="btn sec" id="clr">Clear</button>
+        <button class="btn sec" id="rnd">Random</button>
+        <button class="btn ai" id="ai">✦ AI Pattern</button>
+        <div style="position:relative"><button class="sel" id="gb">House ▾</button><div class="menu" id="gm" hidden></div></div>
+      </div>
+      <div class="sliders">
+        <div class="ctrl"><label>Tempo <span class="v" id="bv">124 BPM</span></label><input type="range" id="bpm" min="60" max="180" value="124"></div>
+        <div class="ctrl"><label>Swing <span class="v" id="sv">12%</span></label><input type="range" id="sw" min="0" max="65" value="12"></div>
+        <div class="ctrl"><label>Volume <span class="v" id="vv">88%</span></label><input type="range" id="vl" min="0" max="100" value="88"></div>
+      </div>
+    </div>
+  </section>
+  <section class="panel">
+    <div class="row"><div></div><div class="steps" id="nums"></div></div>
+    <div id="tracks"></div>
+    <div class="row" style="margin-top:.75rem"><div></div><div class="steps" id="bars"></div></div>
+  </section>
+  <footer class="foot">
+    <p>Tap pads · track label = audition · right-click mute · Space = play</p>
+    <p><a href="https://lvlltd.com">lvlltd.com</a> · AI agent skill marketplace</p>
+  </footer>
 </div>
-<script>
-const N=16,T=['kick','snare','hat','perc'],M={kick:{l:'Kick',s:'KD',c:'ck',p:'k'},snare:{l:'Snare',s:'SN',c:'csn',p:'sn'},hat:{l:'Hats',s:'HH',c:'ch',p:'hh'},perc:{l:'Perc',s:'PC',c:'cp',p:'pc'}};
-const G=[{id:'house',l:'House',d:'Four-on-floor'},{id:'hiphop',l:'Hip-Hop',d:'Boom-bap'},{id:'breakbeat',l:'Breaks',d:'Syncopated'},{id:'techno',l:'Techno',d:'Driving'},{id:'dnb',l:'DnB',d:'Shuffle'},{id:'afrobeats',l:'Afrobeats',d:'Poly perc'}];
-const emp=()=>{const p={};for(const t of T)p[t]=Array(N).fill(0);return p};
-const rng=a=>{let t=a>>>0;return()=>{t+=0x6D2B79F5;let r=Math.imul(t^t>>>15,1|t);r^=r+Math.imul(r^r>>>7,61|r);return((r^r>>>14)>>>0)/4294967296}};
-const set=(r,a)=>{for(const i of a)if(i>=0&&i<N)r[i]=1};
-function gen(g,seed){const r=rng(seed),p=emp();
-if(g==='house'){set(p.kick,[0,4,8,12]);if(r()>.5)p.kick[14]=1;set(p.snare,[4,12]);for(let i=0;i<N;i++)if(i%2)p.hat[i]=1;set(p.perc,[3,7,11,15])}
-else if(g==='hiphop'){set(p.kick,[0,7,10]);if(r()>.4)p.kick[3]=1;set(p.snare,[4,12]);for(let i=0;i<N;i++)if(i%2===0)p.hat[i]=r()>.15;set(p.perc,[6,14])}
-else if(g==='breakbeat'){set(p.kick,[0,6,10]);set(p.snare,[4,12,14]);for(let i=0;i<N;i++)p.hat[i]=r()>.35;set(p.perc,[2,8,11,15])}
-else if(g==='techno'){set(p.kick,[0,4,8,12]);set(p.snare,[4,12]);for(let i=0;i<N;i++)p.hat[i]=1;set(p.perc,[2,6,10,14])}
-else if(g==='dnb'){set(p.kick,[0,10]);if(r()>.4)p.kick[5]=1;set(p.snare,[4,12]);for(let i=0;i<N;i++)p.hat[i]=r()>.2;set(p.perc,[3,8,11,15])}
-else{set(p.kick,[0,3,8,11]);set(p.snare,[4,12]);for(let i=0;i<N;i++)if(i%2===0)p.hat[i]=1;set(p.perc,[1,5,9,13])}
-return p}
-function rand(seed){const r=rng(seed),p=emp(),d={kick:.27,snare:.17,hat:.44,perc:.15};
-for(const t of T)for(let i=0;i<N;i++){let c=d[t];if(t==='kick'&&i%4===0)c+=.35;if(t==='snare'&&(i===4||i===12))c+=.45;p[t][i]=r()<Math.min(.92,c)?1:0}return p}
-let ctx,master;const nc=new WeakMap();
-function audio(){if(!ctx){ctx=new AudioContext();master=ctx.createGain();master.gain.value=.88;const c=ctx.createDynamicsCompressor();c.threshold.value=-12;c.ratio.value=4;master.connect(c);c.connect(ctx.destination)}if(ctx.state==='suspended')ctx.resume();return ctx}
-function nbuf(d){let b=nc.get(ctx);const n=Math.ceil(ctx.sampleRate*Math.max(d,.5));if(b&&b.length>=n)return b;b=ctx.createBuffer(1,n,ctx.sampleRate);const a=b.getChannelData(0);for(let i=0;i<n;i++)a[i]=Math.random()*2-1;nc.set(ctx,b);return b}
-function kick(t){const o=ctx.createOscillator(),a=ctx.createGain();o.type='sine';o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(42,t+.08);a.gain.setValueAtTime(1e-4,t);a.gain.exponentialRampToValueAtTime(.95,t+.004);a.gain.exponentialRampToValueAtTime(1e-4,t+.32);o.connect(a);a.connect(master);o.start(t);o.stop(t+.35)}
-function snare(t){const o=ctx.createOscillator(),a=ctx.createGain(),n=ctx.createBufferSource(),f=ctx.createBiquadFilter(),na=ctx.createGain();o.type='triangle';o.frequency.setValueAtTime(185,t);o.frequency.exponentialRampToValueAtTime(110,t+.08);a.gain.setValueAtTime(1e-4,t);a.gain.exponentialRampToValueAtTime(.45,t+.002);a.gain.exponentialRampToValueAtTime(1e-4,t+.12);n.buffer=nbuf(.2);f.type='highpass';f.frequency.value=1800;na.gain.setValueAtTime(1e-4,t);na.gain.exponentialRampToValueAtTime(.55,t+.002);na.gain.exponentialRampToValueAtTime(1e-4,t+.16);o.connect(a);a.connect(master);n.connect(f);f.connect(na);na.connect(master);o.start(t);o.stop(t+.15);n.start(t);n.stop(t+.2)}
-function hat(t){const n=ctx.createBufferSource(),bp=ctx.createBiquadFilter(),hp=ctx.createBiquadFilter(),a=ctx.createGain();n.buffer=nbuf(.08);bp.type='bandpass';bp.frequency.value=9000;hp.type='highpass';hp.frequency.value=7000;a.gain.setValueAtTime(1e-4,t);a.gain.exponentialRampToValueAtTime(.32,t+.001);a.gain.exponentialRampToValueAtTime(1e-4,t+.055);n.connect(bp);bp.connect(hp);hp.connect(a);a.connect(master);n.start(t);n.stop(t+.07)}
-function perc(t){const o=ctx.createOscillator(),a=ctx.createGain();o.type='square';o.frequency.setValueAtTime(820,t);o.frequency.exponentialRampToValueAtTime(320,t+.04);a.gain.setValueAtTime(1e-4,t);a.gain.exponentialRampToValueAtTime(.28,t+.001);a.gain.exponentialRampToValueAtTime(1e-4,t+.09);o.connect(a);a.connect(master);o.start(t);o.stop(t+.1)}
-const playV=(v,t)=>{if(v==='kick')kick(t);else if(v==='snare')snare(t);else if(v==='hat')hat(t);else perc(t)};
-let pattern=gen('house',42),bpm=124,swing=.12,genre='house',playing=0,cur=-1,muted={kick:0,snare:0,hat:0,perc:0},next=0,si=0,timer=0;
-const tracks=document.getElementById('tracks'),nums=document.getElementById('nums'),bars=document.getElementById('bars'),st=document.getElementById('st'),playB=document.getElementById('play');
-for(let i=0;i<N;i++){const n=document.createElement('div');n.className='sn'+(i%4===0?' b':'');n.textContent=i+1;n.dataset.i=i;nums.appendChild(n);const b=document.createElement('div');b.className='pb'+(i%4===0?' b':'');b.dataset.i=i;bars.appendChild(b)}
-function draw(){tracks.innerHTML='';for(const t of T){const row=document.createElement('div');row.className='row';const lab=document.createElement('button');lab.className='tl'+(muted[t]?' mu':'');lab.innerHTML='<strong class="'+M[t].c+'">'+M[t].l+'</strong><span>'+(muted[t]?'muted':M[t].s)+'</span>';lab.onclick=()=>{audio();playV(t,ctx.currentTime)};lab.oncontextmenu=e=>{e.preventDefault();muted[t]=!muted[t];draw()};const steps=document.createElement('div');steps.className='steps';
-for(let i=0;i<N;i++){const pad=document.createElement('button');pad.className='pad'+(i%4===0?' be':'')+(pattern[t][i]?' ok '+M[t].p:'')+(cur===i?' ph':'');pad.onclick=()=>{const on=!pattern[t][i];pattern[t][i]=on?1:0;if(on&&!playing){audio();playV(t,ctx.currentTime)}draw()};steps.appendChild(pad)}
-row.append(lab,steps);tracks.appendChild(row)}
-nums.querySelectorAll('.sn').forEach(el=>{const i=+el.dataset.i;el.className='sn'+(i%4===0?' b':'')+(cur===i?' n':'')});
-bars.querySelectorAll('.pb').forEach(el=>{const i=+el.dataset.i;el.className='pb'+(i%4===0?' b':'')+(cur===i?' on':'')})}
-draw();
-const dur=s=>{const x=60/bpm/4,w=Math.max(0,Math.min(.75,swing));return s%2===0?x*(1+w):x*(1-w)};
-function sched(s,t){const d=Math.max(0,(t-ctx.currentTime)*1000);setTimeout(()=>{if(playing){cur=s;draw()}},d);for(const tr of T)if(!muted[tr]&&pattern[tr][s])playV(tr,t)}
-function tick(){if(!playing||!ctx)return;while(next<ctx.currentTime+.1){sched(si,next);next+=dur(si);si=(si+1)%N}timer=setTimeout(tick,20)}
-function toggle(){audio();if(playing){playing=0;clearTimeout(timer);cur=-1;playB.textContent='▶';playB.className='btn play';playB.setAttribute('aria-label','Play');draw()}else{playing=1;si=0;next=ctx.currentTime+.04;playB.textContent='■';playB.className='btn stop';playB.setAttribute('aria-label','Stop');tick()}}
-playB.onclick=toggle;document.getElementById('clr').onclick=()=>{pattern=emp();st.textContent='Pattern cleared';draw()};
-document.getElementById('rnd').onclick=()=>{const s=Date.now();pattern=rand(s);st.textContent='Randomized · seed '+(s%10000);draw()};
-document.getElementById('ai').onclick=()=>{const s=Date.now();pattern=gen(genre,s);const g=G.find(x=>x.id===genre);st.textContent='AI · '+(g?g.l:genre)+' · seed '+(s%10000);draw()};
-const gb=document.getElementById('gb'),gm=document.getElementById('gm');
-gb.onclick=e=>{e.stopPropagation();if(!gm.hidden){gm.hidden=1;return}gm.innerHTML='';for(const g of G){const b=document.createElement('button');b.textContent=g.l+' — '+g.d;b.onclick=()=>{genre=g.id;gb.textContent=g.l+' ▾';gm.hidden=1};gm.appendChild(b)}gm.hidden=0};
-document.onclick=()=>gm.hidden=1;
-document.getElementById('bpm').oninput=e=>{bpm=+e.target.value;document.getElementById('bv').textContent=bpm+' BPM'};
-document.getElementById('sw').oninput=e=>{swing=(+e.target.value)/100;document.getElementById('sv').textContent=Math.round(swing*100)+'%'};
-document.getElementById('vl').oninput=e=>{const v=(+e.target.value)/100;document.getElementById('vv').textContent=Math.round(v*100)+'%';if(master)master.gain.value=v};
-addEventListener('keydown',e=>{if(e.code==='Space'&&e.target.tagName!=='INPUT'&&e.target.tagName!=='BUTTON'){e.preventDefault();toggle()}});
-</script></body></html>
+</div>
+<script src="/app.js"></script>
+</body>
+</html>

@@ -1,15 +1,15 @@
-# Step Drum Machine — LVL LTD
+# LVL LTD Studio — Modular Synth & Drums
 
-16-step drum sequencer with kick, snare, hats, and perc.
+Free browser music lab for [lvlltd.com](https://lvlltd.com):
 
-## Features
-- Play / Stop (Spacebar)
-- Tempo 60–180 BPM
-- Swing
-- Clear / Randomize
-- AI genre patterns (House, Hip-Hop, Breaks, Techno, DnB, Afrobeats)
-- Visual playhead highlighting
-- Track mute (right-click labels)
+- **AS3340 Voice Lab** — Eurorack 1V/oct expo converter, multi-wave VCO, VCF, VCA, LFO, drive/chorus/delay
+- **Step Drum Machine** — 16-step grid, swing, AI genre patterns
 
-Live: https://drums.lvlltd.com  
-Parent: https://lvlltd.com
+## Live
+
+- Section: https://lvlltd.com/tools/music-lab/
+- App: https://lvlltd-drums.vercel.app
+
+## Local
+
+Open `index.html` via any static server, or deploy the four files (`index.html`, `app.js`, `app.css`, `favicon.svg`) to Vercel/Pages.
